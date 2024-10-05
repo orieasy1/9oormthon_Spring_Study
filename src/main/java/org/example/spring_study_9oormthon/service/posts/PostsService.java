@@ -1,7 +1,11 @@
 package org.example.spring_study_9oormthon.service.posts;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.example.spring_study_9oormthon.domain.posts.Posts;
 import org.example.spring_study_9oormthon.domain.posts.PostsRepository;
+import org.example.spring_study_9oormthon.web.dto.PostsListResponseDto;
 import org.example.spring_study_9oormthon.web.dto.PostsResponseDto;
 import org.example.spring_study_9oormthon.web.dto.PostsSaveRequestDto;
 import org.example.spring_study_9oormthon.web.dto.PostsUpdateRequestDto;
@@ -35,5 +39,20 @@ public class PostsService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id" + id));
 
         return new PostsResponseDto(entity);
+    }
+
+    @Transactional
+    public List<PostsListResponseDto> findAllDesc() {
+        return postsRepository.findAllDesc().stream()
+                .map(PostsListResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void delete (Long id) {
+        Posts posts = postsRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
+
+        postsRepository.delete(posts);
     }
 }
